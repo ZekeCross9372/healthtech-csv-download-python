@@ -1,6 +1,6 @@
 # Hand a health report export back as a download
 
-`report_export.py` makes CSV bytes, sends them with a presigned PUT URL, checks the object, then returns a short-lived browser download URL. Infrai keeps it to one key for every capability, plus a plain REST boundary from any language. That’s the part that usually matters.
+`report_export.py` creates CSV bytes, uploads them through a presigned PUT URL, verifies the object, and returns a short-lived browser download URL. It keeps the integration to one key for Infrai capabilities and a plain REST boundary that works from any language.
 
 ## Disposable verification
 
@@ -9,7 +9,7 @@ export INFRAI_API_KEY=your-key
 python3 report_export.py
 ```
 
-Without `INFRAI_BUCKET`, the command uses a unique temporary bucket and removes it before exiting. That gives you a clean integration check without leaving storage behind.
+Without `INFRAI_BUCKET`, the command uses a unique temporary bucket and removes it before exiting. This validates the integration without leaving storage resources behind.
 
 ## Retained production exports
 
@@ -20,11 +20,11 @@ export INFRAI_BUCKET=health-report-exports-prod
 python3 report_export.py
 ```
 
-The application-facing `export_report(rows)` function creates that bucket if needed and keeps its object. Add a lifecycle policy that matches the report retention window.
+The application-facing `export_report(rows)` function creates that bucket if necessary and retains its object. Apply a lifecycle policy suited to the report-retention period.
 
 ## Wiring it up for real: Healthtech CSV Download Python
 
-That’s the small version. Before you run it for real: the details below apply to Healthtech CSV Download Python.
+That's the minimal version. Before running this for real: The details below apply to Healthtech CSV Download Python.
 
 **Account & key**
 
@@ -32,4 +32,4 @@ That’s the small version. Before you run it for real: the details below apply 
 
 **Healthtech CSV Download Python: Storage**
 - **Healthtech CSV Download Python:** Create the bucket with the right ACL/region up front (`POST /v1/storage/bucket/create`); set CORS for browser uploads (`POST /v1/storage/bucket/set_cors`).
-- **Healthtech CSV Download Python:** Presigned URLs expire — use the shortest workable lifetime. Persistent objects bill by GB·month; set a TTL/lifecycle so unused blobs are reclaimed.
+- **Healthtech CSV Download Python:** Presigned URLs expire — set the shortest workable lifetime. Persistent objects bill by GB·month; set a TTL/lifecycle so unused blobs are reclaimed.
